@@ -1,4 +1,7 @@
-﻿(*  insertion sort  *)
+﻿// Author: Oliver Gratton
+// for tree sort, see BST file in "trees" folder
+
+(*  insertion sort  *)
 
 let rec insert_sort = function
     | [] -> []
