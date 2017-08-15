@@ -1,4 +1,4 @@
-package astar;
+package graph_search.astar.java;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -13,6 +13,9 @@ import java.util.TreeSet;
  * n means it costs n 'energy' to get there from its neigbours
  * More complex cost networks will need graphs
  * 
+ * Diagonal moves are multiplied by sqrt(2) so we don't get
+ * unecessarily funky paths just cos it can.
+ * 
  * Outputs a list of points
  * 
  * @author Oliver Gratton
@@ -24,10 +27,12 @@ public class AStarSearch
 	private TreeSet<Point> visited;
 	private Point goal;
 	private SearchNode current;
-	private double costSoFar;
 
 	private final int width, height;
 
+	/**
+	 * True if we can move diagonally
+	 */
 	private boolean diag;
 
 	private int[][] map;
@@ -46,7 +51,7 @@ public class AStarSearch
 	 * @param start Start point
 	 * @param goal End point
 	 * @param diag True if diagonal moves are accepted
-	 * @return
+	 * @return The route
 	 */
 	public LinkedList<Point> search(Point start, Point goal, boolean diag)
 	{
@@ -54,8 +59,7 @@ public class AStarSearch
 		this.frontier = new PriorityQueue<SearchNode>(SearchNode.priorityComparator()); // sorts by cost + heuristic.
 		this.visited = new TreeSet<Point>(new PointComparator());
 		this.goal = goal;
-		this.costSoFar = 0;
-		this.current = new SearchNode(start, new SearchNode(), costSoFar, goal);
+		this.current = new SearchNode(start, new SearchNode(), 0, goal);
 		this.diag = diag;
 
 		// first check if we're already there somehow
@@ -89,7 +93,7 @@ public class AStarSearch
 			}
 		}
 
-		System.out.println("Cost: " + costSoFar);
+		System.out.println("Cost: " + current.distanceTravelled());
 
 		return ll;
 	}
@@ -144,8 +148,9 @@ public class AStarSearch
 		// we only care if we've not seen it yet and we can walk on it
 		if (!visited.contains(neiLoc) && value > 0)
 		{
+			double diagMultiplier = StaticHeuristics.euclidean(current.getLocation(), neiLoc);
 			double cost = map[neiX][neiY];
-			neighbours.add(new SearchNode(neiLoc, current, costSoFar + cost, goal));
+			neighbours.add(new SearchNode(neiLoc, current, cost*diagMultiplier, goal));
 		}
 
 		return neighbours;

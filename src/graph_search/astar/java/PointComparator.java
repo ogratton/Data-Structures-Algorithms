@@ -1,4 +1,4 @@
-package astar;
+package graph_search.astar.java;
 
 import java.awt.Point;
 import java.util.Comparator;

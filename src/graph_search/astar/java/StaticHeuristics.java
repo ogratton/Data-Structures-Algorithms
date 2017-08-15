@@ -1,4 +1,4 @@
-package astar;
+package graph_search.astar.java;
 
 import java.awt.Point;
 
@@ -19,18 +19,7 @@ public class StaticHeuristics
 	 */
 	public static double euclidean(Point a, Point b)
 	{
-
-		double dist;
-		try
-		{
-			dist = Math.sqrt(Math.pow(Math.abs(a.getX()) - Math.abs(b.getX()), 2) + Math.pow(Math.abs(a.getY()) - Math.abs(b.getY()), 2));
-		}
-		catch (NullPointerException e)
-		{
-			return Double.MAX_VALUE;
-		}
-
-		return dist;
+		return Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getY() - a.getY(), 2));
 	}
 
 	/**
@@ -40,7 +29,6 @@ public class StaticHeuristics
 	 */
 	public static double manhattan(Point a, Point b)
 	{
-		double dist = Math.abs((Math.abs(a.getX()) - Math.abs(b.getX())) + (Math.abs(a.getY()) - Math.abs(b.getY())));
-		return dist;
+		return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
 	}
 }

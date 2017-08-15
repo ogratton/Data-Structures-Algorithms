@@ -1,4 +1,4 @@
-package astar;
+package graph_search.astar.java;
 
 import java.awt.Point;
 import java.util.Comparator;
@@ -26,22 +26,22 @@ public class SearchNode
 	 * @param location
 	 * @param type
 	 * @param parent
-	 * @param costSoFar
+	 * @param cost
 	 * @param goal
 	 */
-	public SearchNode(Point location, SearchNode parent, double costSoFar, Point goal)
+	public SearchNode(Point location, SearchNode parent, double cost, Point goal)
 	{
 		isEmpty = false;
 		this.location = location;
 		this.parent = parent;
-		this.costSoFar = costSoFar;
+		this.costSoFar = cost + parent.distanceTravelled();
 		this.distToGo = StaticHeuristics.euclidean(location, goal);
 	}
 
 	/**
-	 * See how far we've come from the start
+	 * See how much this route has cost us from the start
 	 * 
-	 * @return number of squares traversed to get to this point
+	 * @return cost in getting to this point
 	 */
 	public double distanceTravelled()
 	{
@@ -110,11 +110,11 @@ class SearchNodePriorityComparator implements Comparator<SearchNode>
 	@Override
 	public int compare(SearchNode n1, SearchNode n2)
 	{
-		int val = (int) ((n1.distanceTravelled() + n1.distanceToGo()) - (n2.distanceTravelled() + n2.distanceToGo()));
-		if (val > 1)
+		double val = (n1.distanceTravelled() + n1.distanceToGo()) - (n2.distanceTravelled() + n2.distanceToGo());
+		if (val > 0)
 			val = 1;
-		if (val < -1)
+		if (val < 0)
 			val = -1;
-		return val;
+		return (int) val;
 	}
 }
