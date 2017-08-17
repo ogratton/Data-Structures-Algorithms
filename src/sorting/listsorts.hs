@@ -1,6 +1,7 @@
 -- Author: Oliver Gratton
 -- TODO auto-benchmarking (can be done in interactive with :set +s command)
 import Data.List
+import System.Random
 
 -- BUBBLE SORT --
 bsort xs = if (ys == xs) then xs else bsort ys 
@@ -52,3 +53,47 @@ qsort (x:xs) = (qsort lower) ++ [x] ++ (qsort higher)
    -- v2: filter                   
 qsort2 []     = []
 qsort2 (x:xs) = (qsort2 $ filter (<= x) xs) ++ [x] ++ (qsort2 $ filter (> x) xs)
+
+
+-- BENCHMARKING --
+
+   -- ordered case
+test 0 f = length $ f [1..10000]
+   -- reversed case
+test 1 f = length $ f [10000,9999..1]
+   -- random case
+test n f = length $ f $ runRand n (randomList 10000)
+
+
+   -- 'Random' code from Martín Escardo
+data Rand a = Rand(StdGen -> (a , StdGen))
+
+instance Monad Rand where
+ return x = Rand(\g -> (x,g))
+ Rand h >>= f = Rand(\g -> let (x, g')   = h g 
+                               (Rand h') = f x
+                           in h' g')
+
+-- Remove the following to definitions if you have a version of
+-- Haskell prior to the monad revolution:
+
+instance Functor Rand where
+  fmap f xm = xm >>= pure . f
+
+instance Applicative Rand where
+  pure = return
+  xm <*> ym = xm >>= \x -> ym >>= pure . x
+
+randInt :: Rand Int
+randInt = Rand random
+
+randomList :: Int -> Rand [Int]
+randomList 0 = return []
+randomList n = do  
+  i <- randInt
+  xs <- randomList(n-1)
+  return(i : xs)
+  
+-- This is how we "can get out" of Rand a: 
+runRand :: Int -> Rand a -> a
+runRand seed (Rand h) = fst(h(mkStdGen seed))
