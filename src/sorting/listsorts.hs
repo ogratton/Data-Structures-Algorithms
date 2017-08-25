@@ -1,5 +1,8 @@
 -- Author: Oliver Gratton
 -- TODO auto-benchmarking (can be done in interactive with :set +s command)
+
+module ListSorts where
+
 import Data.List
 import System.Random
 
