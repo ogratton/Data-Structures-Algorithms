@@ -81,7 +81,7 @@ let rec deleteLargest = function
 (* delete a node from the tree *)
 let rec delete a = function
     |Empty                          -> Empty
-    |BST((x,y),left,right) when a=x -> if isEmpty left then right else if isEmpty right then left else BST((fst (Option.get (largest left)), snd (Option.get (largest left))),deleteLargest left, right)
+    |BST((x,y),left,right) when a=x -> if isEmpty left then right else if isEmpty right then left else BST(Option.get (largest left),deleteLargest left, right)
     |BST((x,y),left,right) when a<x -> BST((x,y),delete a left, right)
     |BST((x,y),left,right)          -> BST((x,y),left, delete a right)
 
@@ -117,7 +117,7 @@ let balance tree =
     let rec bal list =
         if list=[] then Empty else
         let info = listInfo list in
-        BST( (fst (sndT info),snd (sndT info)) , bal (fstT info), bal (thdT info))
+        BST( sndT info , bal (fstT info), bal (thdT info))
     in bal (printBST tree)
     
 
