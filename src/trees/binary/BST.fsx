@@ -73,7 +73,6 @@ let rec largest = function
     |BST((x,y),left,right) -> if isEmpty right then Some (x,y) else largest right
 
 (* delete the largest item in a tree *)
-(* can't use options for some reason *)
 let rec deleteLargest = function
     |Empty                 -> Empty
     |BST((x,y),left,right) -> if isEmpty right then  left else BST((x,y),left,(deleteLargest right))
